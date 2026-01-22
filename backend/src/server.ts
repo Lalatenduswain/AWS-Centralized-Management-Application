@@ -27,6 +27,7 @@ import billingRoutes from './routes/billing.routes';
 import budgetsRoutes from './routes/budgets.routes';
 import resourceAssignmentsRoutes from './routes/resource-assignments.routes';
 import alertsRoutes from './routes/alerts.routes';
+import exportsRoutes from './routes/exports.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 
 // Load environment variables from .env file
@@ -104,6 +105,9 @@ app.use('/api/resource-assignments', resourceAssignmentsRoutes);
 
 // Budget alerts routes
 app.use('/api/alerts', alertsRoutes);
+
+// Export & reporting routes
+app.use('/api/exports', exportsRoutes);
 
 /**
  * ERROR HANDLING
@@ -196,6 +200,20 @@ const startServer = async () => {
       console.log('  GET    /api/alerts/statistics');
       console.log('  POST   /api/alerts/check (manual trigger)');
       console.log('  POST   /api/alerts/test-email');
+      console.log('\n📊 Export & Reports:');
+      console.log('  GET    /api/exports/billing-records/csv');
+      console.log('  GET    /api/exports/cost-breakdown/csv');
+      console.log('  GET    /api/exports/daily-costs/csv');
+      console.log('  GET    /api/exports/top-drivers/csv');
+      console.log('  GET    /api/exports/budgets/csv');
+      console.log('  GET    /api/exports/assignments/csv');
+      console.log('  GET    /api/exports/alerts/csv');
+      console.log('  GET    /api/exports/monthly-report/csv');
+      console.log('  GET    /api/exports/monthly-invoice/pdf');
+      console.log('  GET    /api/exports/cost-summary/pdf');
+      console.log('\n🔮 Cost Forecasting:');
+      console.log('  GET    /api/exports/forecast/comprehensive');
+      console.log('  GET    /api/exports/forecast/:method (linear|moving-average|exponential|historical)');
       console.log('========================================');
     });
   } catch (error) {
