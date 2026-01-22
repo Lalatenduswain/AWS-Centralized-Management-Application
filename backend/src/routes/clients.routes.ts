@@ -12,7 +12,7 @@
  * - DELETE /api/clients/:id - Delete client
  */
 
-import express, { Response } from 'express';
+import express, { Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import {
   createClient,

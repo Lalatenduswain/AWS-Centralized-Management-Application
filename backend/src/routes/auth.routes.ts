@@ -7,7 +7,7 @@
  * - POST /api/auth/login - Login and get JWT token
  */
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
@@ -128,9 +128,11 @@ router.post(
         throw createError('JWT_SECRET is not configured', 500);
       }
 
-      const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '1h',
-      });
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        jwtSecret,
+        { expiresIn: '1h' as jwt.SignOptions['expiresIn'] }
+      );
 
       // Log the activity
       await createActivityLog({

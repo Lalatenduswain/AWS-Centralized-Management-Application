@@ -23,6 +23,9 @@ import authRoutes from './routes/auth.routes';
 import clientsRoutes from './routes/clients.routes';
 import awsRoutes from './routes/aws.routes';
 import logsRoutes from './routes/logs.routes';
+import billingRoutes from './routes/billing.routes';
+import budgetsRoutes from './routes/budgets.routes';
+import resourceAssignmentsRoutes from './routes/resource-assignments.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 
 // Load environment variables from .env file
@@ -89,6 +92,15 @@ app.use('/api/aws', awsRoutes);
 // Activity logs routes
 app.use('/api/logs', logsRoutes);
 
+// Billing & cost management routes
+app.use('/api/billing', billingRoutes);
+
+// Budget management routes
+app.use('/api/budgets', budgetsRoutes);
+
+// Resource assignment routes
+app.use('/api/resource-assignments', resourceAssignmentsRoutes);
+
 /**
  * ERROR HANDLING
  * These handle errors and 404s
@@ -121,19 +133,48 @@ const startServer = async () => {
       console.log(`Health check: http://localhost:${PORT}/health`);
       console.log('========================================');
       console.log('Available endpoints:');
+      console.log('\n📝 Authentication:');
       console.log('  POST   /api/auth/register');
       console.log('  POST   /api/auth/login');
+      console.log('\n👥 Client Management:');
       console.log('  GET    /api/clients');
       console.log('  POST   /api/clients');
       console.log('  GET    /api/clients/:id');
       console.log('  PUT    /api/clients/:id');
       console.log('  DELETE /api/clients/:id');
+      console.log('\n☁️  AWS Resources:');
       console.log('  GET    /api/aws/:clientId/ec2/instances');
       console.log('  POST   /api/aws/:clientId/ec2/instances/:instanceId/start');
       console.log('  POST   /api/aws/:clientId/ec2/instances/:instanceId/stop');
       console.log('  GET    /api/aws/:clientId/s3/buckets');
       console.log('  GET    /api/aws/:clientId/rds/instances');
       console.log('  GET    /api/aws/:clientId/costs');
+      console.log('\n💰 Billing & Cost Management:');
+      console.log('  GET    /api/billing/user/:userId/costs');
+      console.log('  GET    /api/billing/user/:userId/summary');
+      console.log('  GET    /api/billing/user/:userId/breakdown');
+      console.log('  GET    /api/billing/user/:userId/trend');
+      console.log('  GET    /api/billing/user/:userId/top-drivers');
+      console.log('  GET    /api/billing/user/:userId/forecast');
+      console.log('  GET    /api/billing/client/:clientId/summary');
+      console.log('  POST   /api/billing/sync');
+      console.log('  GET    /api/billing/all-users');
+      console.log('\n💳 Budget Management:');
+      console.log('  POST   /api/budgets');
+      console.log('  GET    /api/budgets/user/:userId');
+      console.log('  GET    /api/budgets/user/:userId/active');
+      console.log('  GET    /api/budgets/user/:userId/status');
+      console.log('  PUT    /api/budgets/:id');
+      console.log('  DELETE /api/budgets/:id');
+      console.log('  GET    /api/budgets/alerts');
+      console.log('\n🔗 Resource Assignments:');
+      console.log('  POST   /api/resource-assignments');
+      console.log('  GET    /api/resource-assignments/user/:userId');
+      console.log('  GET    /api/resource-assignments/client/:clientId');
+      console.log('  PUT    /api/resource-assignments/:id');
+      console.log('  DELETE /api/resource-assignments/:id');
+      console.log('  POST   /api/resource-assignments/bulk');
+      console.log('\n📋 Activity Logs:');
       console.log('  GET    /api/logs');
       console.log('========================================');
     });
