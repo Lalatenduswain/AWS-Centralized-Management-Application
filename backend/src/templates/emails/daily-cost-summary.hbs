@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Cost Summary</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .header p {
+      margin: 10px 0 0 0;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #dee2e6;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .table-container {
+      margin: 30px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #dee2e6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      background-color: #f8f9fa;
+    }
+    th {
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      color: #495057;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 12px;
+      border-top: 1px solid #e9ecef;
+      color: #495057;
+    }
+    .service-name {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    .cost-value {
+      text-align: right;
+      font-weight: 600;
+      color: #28a745;
+    }
+    .info-box {
+      background-color: #e7f3ff;
+      border-left: 4px solid #007bff;
+      padding: 20px;
+      border-radius: 4px;
+      margin: 30px 0;
+    }
+    .info-box p {
+      margin: 0;
+      color: #004085;
+      line-height: 1.6;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+    .footer {
+      background-color: #f8f9fa;
+      padding: 30px;
+      text-align: center;
+      color: #6c757d;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    @media only screen and (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📊 Daily Cost Summary</h1>
+      <p>{{currentDate}}</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <p style="margin-bottom: 20px;">Hello {{userName}},</p>
+
+      <p>Here's your daily AWS cost summary:</p>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Yesterday</div>
+          <div class="stat-value">{{yesterdayCost}}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Month to Date</div>
+          <div class="stat-value">{{monthToDateCost}}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Daily Average</div>
+          <div class="stat-value">{{averageDailyCost}}</div>
+        </div>
+      </div>
+
+      <!-- Top Services Table -->
+      {{#if topServices}}
+      <h3 style="color: #2c3e50; margin-top: 30px;">Top Services by Cost</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th style="text-align: right;">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each topServices}}
+            <tr>
+              <td class="service-name">{{this.service_name}}</td>
+              <td class="cost-value">{{this.cost}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      <!-- Info Box -->
+      <div class="info-box">
+        <p><strong>💡 Tip:</strong> Regularly reviewing your daily costs helps you identify spending patterns and optimize your AWS infrastructure for cost efficiency.</p>
+      </div>
+
+      <!-- Call to Action -->
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="#" class="cta-button">View Full Billing Dashboard</a>
+      </div>
+
+      <!-- Quick Links -->
+      <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h3 style="margin-top: 0; color: #2c3e50;">🔗 Quick Links</h3>
+        <ul style="margin: 0; padding-left: 20px; color: #495057;">
+          <li>Cost breakdown by service</li>
+          <li>Budget status and alerts</li>
+          <li>Resource assignments</li>
+          <li>Cost optimization recommendations</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>AWS Centralized Management Application</strong></p>
+      <p>This is an automated daily summary. To unsubscribe or change notification settings, visit your dashboard.</p>
+      <p>&copy; {{currentYear}} AWS Centralized Management. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

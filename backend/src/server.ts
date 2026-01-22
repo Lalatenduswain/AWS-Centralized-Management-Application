@@ -26,6 +26,7 @@ import logsRoutes from './routes/logs.routes';
 import billingRoutes from './routes/billing.routes';
 import budgetsRoutes from './routes/budgets.routes';
 import resourceAssignmentsRoutes from './routes/resource-assignments.routes';
+import alertsRoutes from './routes/alerts.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 
 // Load environment variables from .env file
@@ -101,6 +102,9 @@ app.use('/api/budgets', budgetsRoutes);
 // Resource assignment routes
 app.use('/api/resource-assignments', resourceAssignmentsRoutes);
 
+// Budget alerts routes
+app.use('/api/alerts', alertsRoutes);
+
 /**
  * ERROR HANDLING
  * These handle errors and 404s
@@ -122,6 +126,16 @@ const startServer = async () => {
     // Test database connection
     await pool.query('SELECT NOW()');
     console.log('✓ Database connection established');
+
+    // Initialize cron jobs for budget alerts and cost tracking
+    console.log('\nInitializing services...');
+    const { cronJobsService } = await import('./services/cron-jobs.service');
+    const { emailService } = await import('./services/email.service');
+
+    // Verify email configuration (optional)
+    await emailService.verifyConnection().catch(() => {
+      console.warn('⚠ Email service not configured or unavailable');
+    });
 
     // Start listening for requests
     app.listen(PORT, () => {
@@ -176,6 +190,12 @@ const startServer = async () => {
       console.log('  POST   /api/resource-assignments/bulk');
       console.log('\n📋 Activity Logs:');
       console.log('  GET    /api/logs');
+      console.log('\n🔔 Budget Alerts:');
+      console.log('  GET    /api/alerts/user/:userId');
+      console.log('  GET    /api/alerts/budget/:budgetId');
+      console.log('  GET    /api/alerts/statistics');
+      console.log('  POST   /api/alerts/check (manual trigger)');
+      console.log('  POST   /api/alerts/test-email');
       console.log('========================================');
     });
   } catch (error) {

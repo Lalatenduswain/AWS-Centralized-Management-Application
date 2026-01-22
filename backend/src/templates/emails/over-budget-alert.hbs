@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Over Budget Alert</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .alert-box {
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      background-color: #f8d7da;
+      border: 2px solid #dc3545;
+      color: #721c24;
+    }
+    .alert-box h2 {
+      margin: 0 0 10px 0;
+      font-size: 22px;
+      color: #721c24;
+    }
+    .alert-box p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .overage-highlight {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 30px 0;
+    }
+    .overage-amount {
+      font-size: 48px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    .overage-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 30px 0;
+    }
+    .stat-card {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .cta-button {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+    .urgent-actions {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 20px;
+      border-radius: 4px;
+      margin: 30px 0;
+    }
+    .urgent-actions h3 {
+      margin-top: 0;
+      color: #856404;
+    }
+    .urgent-actions ul {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+      color: #856404;
+    }
+    .urgent-actions li {
+      margin-bottom: 8px;
+    }
+    .footer {
+      background-color: #f8f9fa;
+      padding: 30px;
+      text-align: center;
+      color: #6c757d;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    @media only screen and (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>🚨 URGENT: Over Budget</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <p style="margin-bottom: 20px;">Hello {{userName}},</p>
+
+      <!-- Alert Box -->
+      <div class="alert-box">
+        <h2>⚠️ Critical Budget Alert</h2>
+        <p>Your AWS spending has <strong>exceeded your monthly budget limit</strong>. Immediate action is required to prevent further overspending.</p>
+      </div>
+
+      <!-- Overage Highlight -->
+      <div class="overage-highlight">
+        <div class="overage-label">You are over budget by</div>
+        <div class="overage-amount">{{overageAmount}}</div>
+        <div class="overage-label">and counting...</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Monthly Limit</div>
+          <div class="stat-value">{{monthlyLimit}}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Current Spending</div>
+          <div class="stat-value" style="color: #dc3545;">{{currentSpending}}</div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="#" class="cta-button">Take Action Now</a>
+      </div>
+
+      <!-- Urgent Actions -->
+      <div class="urgent-actions">
+        <h3>🔥 Immediate Actions Required</h3>
+        <ul>
+          <li><strong>Stop all non-essential EC2 instances immediately</strong></li>
+          <li><strong>Review and terminate unused resources</strong></li>
+          <li><strong>Check for runaway processes or services</strong></li>
+          <li><strong>Disable auto-scaling if applicable</strong></li>
+          <li><strong>Review recent AWS console activities</strong></li>
+          <li><strong>Contact your AWS administrator</strong></li>
+        </ul>
+      </div>
+
+      <!-- Additional Info -->
+      <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h3 style="margin-top: 0; color: #2c3e50;">📊 Next Steps</h3>
+        <ol style="margin: 0; padding-left: 20px; color: #495057;">
+          <li>Log in to your AWS Central Management dashboard</li>
+          <li>Review your top cost drivers</li>
+          <li>Identify and stop unnecessary resources</li>
+          <li>Set up CloudWatch alarms for cost monitoring</li>
+          <li>Consider adjusting your budget if needed</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>AWS Centralized Management Application</strong></p>
+      <p>This is an automated critical notification. Please take immediate action.</p>
+      <p>&copy; {{currentYear}} AWS Centralized Management. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
