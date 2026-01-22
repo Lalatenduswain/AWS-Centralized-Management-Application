@@ -137,4 +137,171 @@ export const logsAPI = {
   },
 };
 
+/**
+ * Billing & Cost Management API
+ */
+export const billingAPI = {
+  // Get user's billing records with optional date filtering
+  getUserCosts: (userId: number, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    return apiClient.get(`/billing/user/${userId}/costs?${params.toString()}`);
+  },
+
+  // Get cost summary for current month
+  getUserSummary: (userId: number) =>
+    apiClient.get(`/billing/user/${userId}/summary`),
+
+  // Get cost breakdown by service
+  getUserBreakdown: (userId: number, period?: string) => {
+    const params = period ? `?period=${period}` : '';
+    return apiClient.get(`/billing/user/${userId}/breakdown${params}`);
+  },
+
+  // Get daily cost trend
+  getUserTrend: (userId: number, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    return apiClient.get(`/billing/user/${userId}/trend?${params.toString()}`);
+  },
+
+  // Get top cost drivers
+  getTopDrivers: (userId: number, period?: string, limit?: number) => {
+    const params = new URLSearchParams();
+    if (period) params.append('period', period);
+    if (limit) params.append('limit', limit.toString());
+    return apiClient.get(`/billing/user/${userId}/top-drivers?${params.toString()}`);
+  },
+
+  // Get monthly trend
+  getMonthlyTrend: (userId: number, months?: number) => {
+    const params = months ? `?months=${months}` : '';
+    return apiClient.get(`/billing/user/${userId}/monthly-trend${params}`);
+  },
+
+  // Get cost forecast
+  getForecast: (userId: number) =>
+    apiClient.get(`/billing/user/${userId}/forecast`),
+
+  // Get client cost summary from AWS
+  getClientSummary: (clientId: number, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    return apiClient.get(`/billing/client/${clientId}/summary?${params.toString()}`);
+  },
+
+  // Sync cost data from AWS
+  syncCosts: (clientId: number, userId: number, startDate: string, endDate: string) =>
+    apiClient.post('/billing/sync', { client_id: clientId, user_id: userId, startDate, endDate }),
+
+  // Sync yesterday's costs
+  syncYesterday: (clientId: number, userId: number) =>
+    apiClient.post('/billing/sync/yesterday', { client_id: clientId, user_id: userId }),
+
+  // Get all users billing summary (admin)
+  getAllUsers: (period?: string) => {
+    const params = period ? `?period=${period}` : '';
+    return apiClient.get(`/billing/all-users${params}`);
+  },
+};
+
+/**
+ * Budget Management API
+ */
+export const budgetsAPI = {
+  // Create a new budget
+  create: (budgetData: {
+    user_id: number;
+    monthly_limit: number;
+    currency?: string;
+    alert_threshold?: number;
+    alerts_enabled?: boolean;
+    start_date?: string;
+    end_date?: string;
+  }) => apiClient.post('/budgets', budgetData),
+
+  // Get all budgets for a user
+  getUserBudgets: (userId: number) =>
+    apiClient.get(`/budgets/user/${userId}`),
+
+  // Get active budget for a user
+  getActiveBudget: (userId: number) =>
+    apiClient.get(`/budgets/user/${userId}/active`),
+
+  // Get budget status with current spending
+  getBudgetStatus: (userId: number) =>
+    apiClient.get(`/budgets/user/${userId}/status`),
+
+  // Update a budget
+  update: (budgetId: number, updates: {
+    monthly_limit?: number;
+    alert_threshold?: number;
+    alerts_enabled?: boolean;
+    end_date?: string;
+  }) => apiClient.put(`/budgets/${budgetId}`, updates),
+
+  // Delete a budget
+  delete: (budgetId: number) =>
+    apiClient.delete(`/budgets/${budgetId}`),
+
+  // Get users needing budget alerts (admin)
+  getAlerts: () =>
+    apiClient.get('/budgets/alerts'),
+};
+
+/**
+ * Resource Assignment API
+ */
+export const resourceAssignmentsAPI = {
+  // Assign a resource to a user
+  create: (assignmentData: {
+    user_id: number;
+    client_id: number;
+    resource_type: string;
+    resource_id: string;
+    resource_name?: string;
+    cost_center?: string;
+    notes?: string;
+  }) => apiClient.post('/resource-assignments', assignmentData),
+
+  // Get user's resource assignments
+  getUserAssignments: (userId: number) =>
+    apiClient.get(`/resource-assignments/user/${userId}`),
+
+  // Get client's resource assignments
+  getClientAssignments: (clientId: number) =>
+    apiClient.get(`/resource-assignments/client/${clientId}`),
+
+  // Get assignments grouped by user for a client
+  getClientAssignmentsGrouped: (clientId: number) =>
+    apiClient.get(`/resource-assignments/client/${clientId}/grouped`),
+
+  // Update a resource assignment
+  update: (assignmentId: number, updates: {
+    resource_name?: string;
+    cost_center?: string;
+    notes?: string;
+  }) => apiClient.put(`/resource-assignments/${assignmentId}`, updates),
+
+  // Delete a resource assignment
+  delete: (assignmentId: number) =>
+    apiClient.delete(`/resource-assignments/${assignmentId}`),
+
+  // Bulk assign resources
+  bulkCreate: (bulkData: {
+    user_id: number;
+    client_id: number;
+    resources: Array<{
+      resource_type: string;
+      resource_id: string;
+      resource_name?: string;
+      cost_center?: string;
+      notes?: string;
+    }>;
+  }) => apiClient.post('/resource-assignments/bulk', bulkData),
+};
+
 export default apiClient;

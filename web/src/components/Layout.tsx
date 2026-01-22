@@ -30,6 +30,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <nav className="nav-links">
               <Link to="/dashboard">Dashboard</Link>
               <Link to="/clients">Clients</Link>
+              <Link to="/billing">💰 Billing</Link>
+              <Link to="/budgets">💳 Budgets</Link>
+              <Link to="/resource-assignments">🔗 Assignments</Link>
             </nav>
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               <span style={{ fontSize: '14px', color: '#666' }}>{user?.email}</span>

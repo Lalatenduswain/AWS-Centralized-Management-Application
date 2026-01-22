@@ -13,6 +13,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ClientManagement from './pages/ClientManagement';
 import AWSResources from './pages/AWSResources';
+import UserBilling from './pages/UserBilling';
+import BudgetManagement from './pages/BudgetManagement';
+import ResourceAssignments from './pages/ResourceAssignments';
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -67,6 +70,30 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <AWSResources />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billing"
+              element={
+                <ProtectedRoute>
+                  <UserBilling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/budgets"
+              element={
+                <ProtectedRoute>
+                  <BudgetManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resource-assignments"
+              element={
+                <ProtectedRoute>
+                  <ResourceAssignments />
                 </ProtectedRoute>
               }
             />
