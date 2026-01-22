@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# React Native
+.expo/
+.expo-shared/
+
+# Android
+android/app/build/
+android/.gradle/
+android/app/release/
+
+# iOS
+ios/Pods/
+ios/build/
+*.xcworkspace
+
+# Mobile
+*.jks
+*.p12
+*.key
+*.mobileprovision
+*.iml

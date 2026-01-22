@@ -1,0 +1,162 @@
+/**
+ * AWS Centralized Management Application - Backend Server
+ *
+ * Main entry point for the backend API server.
+ * This file sets up:
+ * - Express application
+ * - Database connection
+ * - Middleware (CORS, JSON parsing, security headers)
+ * - API routes
+ * - Error handling
+ *
+ * For zero-coding beginners:
+ * This is like the "main control center" of your backend.
+ * It receives requests from the web/mobile apps and responds with data.
+ */
+
+import express, { Application } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import dotenv from 'dotenv';
+import { pool } from './config/database';
+import authRoutes from './routes/auth.routes';
+import clientsRoutes from './routes/clients.routes';
+import awsRoutes from './routes/aws.routes';
+import logsRoutes from './routes/logs.routes';
+import { errorHandler, notFoundHandler } from './middleware/error.middleware';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Create Express application
+const app: Application = express();
+
+// Get port from environment variable or use default
+const PORT = process.env.PORT || 3000;
+
+/**
+ * MIDDLEWARE SETUP
+ * Middleware are functions that process requests before they reach your routes
+ */
+
+// Security headers - adds various HTTP headers to secure the app
+app.use(helmet());
+
+// CORS (Cross-Origin Resource Sharing) - allows web/mobile apps to make requests
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3001'];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
+// Parse JSON request bodies
+app.use(express.json());
+
+// Parse URL-encoded request bodies (from forms)
+app.use(express.urlencoded({ extended: true }));
+
+// Request logging (simple version - can be enhanced with morgan)
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
+/**
+ * API ROUTES
+ * These define the endpoints your app can call
+ */
+
+// Health check endpoint (to verify server is running)
+app.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Server is running',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Authentication routes
+app.use('/api/auth', authRoutes);
+
+// Client management routes
+app.use('/api/clients', clientsRoutes);
+
+// AWS resource management routes
+app.use('/api/aws', awsRoutes);
+
+// Activity logs routes
+app.use('/api/logs', logsRoutes);
+
+/**
+ * ERROR HANDLING
+ * These handle errors and 404s
+ */
+
+// 404 handler - catches routes that don't exist
+app.use(notFoundHandler);
+
+// Global error handler - catches all errors
+app.use(errorHandler);
+
+/**
+ * START SERVER
+ * Test database connection and start listening for requests
+ */
+
+const startServer = async () => {
+  try {
+    // Test database connection
+    await pool.query('SELECT NOW()');
+    console.log('✓ Database connection established');
+
+    // Start listening for requests
+    app.listen(PORT, () => {
+      console.log('========================================');
+      console.log('AWS Centralized Management - Backend API');
+      console.log('========================================');
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Health check: http://localhost:${PORT}/health`);
+      console.log('========================================');
+      console.log('Available endpoints:');
+      console.log('  POST   /api/auth/register');
+      console.log('  POST   /api/auth/login');
+      console.log('  GET    /api/clients');
+      console.log('  POST   /api/clients');
+      console.log('  GET    /api/clients/:id');
+      console.log('  PUT    /api/clients/:id');
+      console.log('  DELETE /api/clients/:id');
+      console.log('  GET    /api/aws/:clientId/ec2/instances');
+      console.log('  POST   /api/aws/:clientId/ec2/instances/:instanceId/start');
+      console.log('  POST   /api/aws/:clientId/ec2/instances/:instanceId/stop');
+      console.log('  GET    /api/aws/:clientId/s3/buckets');
+      console.log('  GET    /api/aws/:clientId/rds/instances');
+      console.log('  GET    /api/aws/:clientId/costs');
+      console.log('  GET    /api/logs');
+      console.log('========================================');
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+// Handle graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM signal received: closing server');
+  await pool.end();
+  process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+  console.log('SIGINT signal received: closing server');
+  await pool.end();
+  process.exit(0);
+});
+
+// Start the server
+startServer();
+
+export default app;
