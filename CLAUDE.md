@@ -25,19 +25,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - ✅ Created comprehensive documentation (README.md, SETUP_GUIDE.md, IMPLEMENTATION_SUMMARY.md)
 - ✅ Installed backend dependencies (331 packages)
 
-📦 **Files Created**: 45+ files across backend, web, and mobile
+📦 **Files Created**: 48+ files across backend, web, and mobile
 - Backend: 20+ files (models, routes, services, middleware, config)
 - Web: 12+ files (pages, components, services, contexts)
 - Mobile: 8+ files (screens, services, navigation)
-- Documentation: 4 comprehensive guides
+- Documentation: 5 comprehensive guides (including FEATURE_ROADMAP.md)
 
 🚧 **Current State**:
 - Application is fully implemented and ready for setup
 - All core features working (not tested, but code complete)
 - Dependencies installed for backend only
 - Web and mobile dependencies need installation
+- Git repository initialized with initial commit (b80bb79)
+- Feature roadmap created with 10 priority categories
 
-⏭️ **Next Steps**:
+💡 **Feature Roadmap Created**:
+- See `FEATURE_ROADMAP.md` for comprehensive future features
+- **Priority 1**: Per-User Billing & Cost Management (user's suggestion!)
+- **Priority 2**: Role-Based Access Control (RBAC)
+- **Priority 3**: Advanced AWS Features (Lambda, CloudWatch, VPC, IAM)
+- Plus 7 more priority categories with 100+ feature ideas
+
+⏭️ **Immediate Next Steps** (Setup & Testing):
 1. Install web dependencies: `cd web && npm install`
 2. Install mobile dependencies: `cd mobile && npm install`
 3. Set up PostgreSQL database
@@ -264,15 +273,53 @@ REACT_APP_API_URL=http://localhost:3000/api
 
 ## Future Enhancements
 
-- [ ] Cost Explorer integration
-- [ ] CloudWatch metrics
-- [ ] Lambda management
+**See FEATURE_ROADMAP.md for comprehensive feature ideas (100+ features across 10 priority categories)**
+
+### Priority 1: Per-User Billing & Cost Management 🔥
+- [ ] Track AWS costs per user/team member
+- [ ] Set monthly budgets per user
+- [ ] Budget alerts (email when 80% used)
+- [ ] Cost breakdown by AWS service
+- [ ] Daily/monthly spending trends
+- [ ] Cost forecasting
+- [ ] Invoice generation per user
+- [ ] CSV/PDF export
+
+### Priority 2: Role-Based Access Control (RBAC) 🔥
+- [ ] Super Admin, Admin, Developer, Viewer, Billing Manager roles
+- [ ] Granular permissions per role
+- [ ] Team/group management
+- [ ] Per-client access control
+
+### Priority 3: Advanced AWS Services
+- [ ] Lambda function management
+- [ ] CloudWatch metrics & alarms
+- [ ] VPC & Networking
 - [ ] IAM user management
-- [ ] Multi-factor authentication
-- [ ] Push notifications
-- [ ] Offline mode for mobile
-- [ ] Bulk operations
-- [ ] Advanced filtering and search
+- [ ] ECS/EKS container management
+- [ ] Route53 DNS management
+- [ ] CloudFormation stacks
+
+### Priority 4: Monitoring & Alerts
+- [ ] Real-time resource status updates
+- [ ] Cost alerts (budget exceeded)
+- [ ] Security alerts (unauthorized access)
+- [ ] Performance alerts (high CPU)
+- [ ] Multi-channel notifications (Email, SMS, Slack)
+
+### Priority 5: Security & Compliance
+- [ ] Multi-factor authentication (MFA)
+- [ ] IP whitelisting
+- [ ] Credential rotation
+- [ ] Session management
+- [ ] SOC 2 / GDPR compliance features
+
+### Other Features (See FEATURE_ROADMAP.md)
+- [ ] Advanced reporting & analytics
+- [ ] Team collaboration features
+- [ ] Developer API & integrations
+- [ ] Mobile app enhancements
+- [ ] AI & automation features
 
 ---
 
