@@ -2,72 +2,127 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Last Updated**: 2026-01-22
+**Last Updated**: 2026-01-22 (Phases 1-5 Complete)
 
 ## Current Sprint
 
-- **Goal**: Complete implementation of AWS Centralized Management Application
-- **Progress**: 100% ✅ COMPLETE
+- **Goal**: AWS Centralized Management Application - Complete billing system with alerts and forecasting
+- **Progress**: 100% ✅ Phases 1-5 COMPLETE
 
-## This Session (2026-01-22)
+## This Session (2026-01-22) - Phases 4 & 5 Implementation
 
 ✅ **Completed**:
-- ✅ Created complete project directory structure (backend, web, mobile)
-- ✅ Implemented full backend with Node.js + Express + TypeScript
-- ✅ Set up PostgreSQL database schema with encryption support
-- ✅ Built authentication system (JWT + bcrypt)
-- ✅ Implemented AES-256-GCM encryption service for AWS credentials
-- ✅ Created all API endpoints (auth, clients, AWS resources, logs)
-- ✅ Integrated AWS SDK v3 (EC2, S3, RDS, Cost Explorer)
-- ✅ Built complete React web application with routing
-- ✅ Created all web pages (Login, Dashboard, Client Management, AWS Resources)
-- ✅ Implemented React Native mobile app foundation
-- ✅ Created comprehensive documentation (README.md, SETUP_GUIDE.md, IMPLEMENTATION_SUMMARY.md)
-- ✅ Installed backend dependencies (331 packages)
 
-📦 **Files Created**: 48+ files across backend, web, and mobile
-- Backend: 20+ files (models, routes, services, middleware, config)
-- Web: 12+ files (pages, components, services, contexts)
-- Mobile: 8+ files (screens, services, navigation)
-- Documentation: 5 comprehensive guides (including FEATURE_ROADMAP.md)
+### Phase 4: Budget Alerts System
+- ✅ Email notification service with Nodemailer + Handlebars templates
+- ✅ 3 professional HTML email templates (budget alert, over-budget, daily summary)
+- ✅ Budget alerts database migration (003_add_budget_alerts_table.sql)
+- ✅ BudgetAlert model with CRUD operations and duplicate prevention
+- ✅ Budget alerts orchestration service (threshold detection, email triggering)
+- ✅ Cron jobs service (hourly alerts, daily cost sync, weekly cleanup)
+- ✅ Budget alerts API routes (5 endpoints)
+- ✅ Email service integration with SMTP verification
+
+### Phase 5: Reports & Export with Cost Forecasting
+- ✅ CSV export service with 8 export functions (papaparse)
+  - Billing records, cost breakdowns, daily costs, top drivers
+  - Budgets, resource assignments, alerts, monthly reports
+- ✅ PDF export service with professional invoice generation (PDFKit)
+  - Monthly invoices with service breakdown tables
+  - Cost summary reports with budget comparison
+- ✅ Advanced forecasting service with 4 algorithms:
+  - Linear extrapolation (simple daily average)
+  - 7-day moving average (smoothed)
+  - Exponential smoothing (alpha=0.3, weighted recent data)
+  - Historical trend analysis (growth rate calculation)
+  - Comprehensive forecast with consensus averaging
+  - Automatic trend detection and confidence scoring
+- ✅ Export routes with 12 new API endpoints
+- ✅ Fixed TypeScript compilation errors (is_active property, PDFKit fillColor)
+- ✅ Git repository created and pushed to GitHub
+
+### Git Repository
+- **Repository**: https://github.com/Lalatenduswain/AWS-Centralized-Management-Application
+- **Latest Commit**: 6856ae4 - Add Phase 5: Reports & Export with Cost Forecasting
+- **Status**: All changes committed and pushed
+
+📦 **Files Created/Modified in Phases 4-5**: 16 files
+- **Phase 4 Backend**:
+  - `backend/src/services/email.service.ts` (270 lines)
+  - `backend/src/services/budget-alerts.service.ts` (210 lines)
+  - `backend/src/services/cron-jobs.service.ts` (200 lines)
+  - `backend/src/models/BudgetAlert.ts` (180 lines)
+  - `backend/src/routes/alerts.routes.ts` (170 lines)
+  - `backend/migrations/003_add_budget_alerts_table.sql`
+  - `backend/src/templates/emails/budget-alert.hbs`
+  - `backend/src/templates/emails/over-budget-alert.hbs`
+  - `backend/src/templates/emails/daily-cost-summary.hbs`
+
+- **Phase 5 Backend**:
+  - `backend/src/services/csv-export.service.ts` (234 lines)
+  - `backend/src/services/pdf-export.service.ts` (216 lines)
+  - `backend/src/services/forecasting.service.ts` (252 lines)
+  - `backend/src/routes/exports.routes.ts` (384 lines)
+
+- **Modified**:
+  - `backend/src/server.ts` (integrated cron jobs, email service, export routes)
+  - `backend/.env.example` (added email configuration)
+  - `backend/package.json` (added nodemailer, handlebars, node-cron, papaparse, pdfkit)
 
 🚧 **Current State**:
-- Application is fully implemented and ready for setup
-- All core features working (not tested, but code complete)
-- Dependencies installed for backend only
-- Web and mobile dependencies need installation
-- Git repository initialized with initial commit (b80bb79)
-- Feature roadmap created with 10 priority categories
+- Backend fully implemented with all Phase 1-5 features
+- TypeScript compilation successful (0 errors)
+- Code pushed to GitHub
+- Dependencies installed for Phases 4-5
+- Email service configured but requires SMTP credentials
+- All API endpoints documented in server startup logs
 
-💡 **Feature Roadmap Created**:
-- See `FEATURE_ROADMAP.md` for comprehensive future features
-- **Priority 1**: Per-User Billing & Cost Management (user's suggestion!)
-- **Priority 2**: Role-Based Access Control (RBAC)
-- **Priority 3**: Advanced AWS Features (Lambda, CloudWatch, VPC, IAM)
-- Plus 7 more priority categories with 100+ feature ideas
+⏭️ **Immediate Next Steps**:
 
-⏭️ **Immediate Next Steps** (Setup & Testing):
-1. Install web dependencies: `cd web && npm install`
-2. Install mobile dependencies: `cd mobile && npm install`
-3. Set up PostgreSQL database
-4. Run database schema: `psql -U postgres -d aws_central_mgmt -f backend/schema.sql`
-5. Configure backend `.env` file (copy from `.env.example`)
-6. Generate encryption key: `npm run setup generate-key`
-7. Create admin user: `npm run setup create-admin admin@example.com password`
-8. Start backend: `cd backend && npm run dev`
-9. Start web app: `cd web && npm start`
-10. Test the application end-to-end
+### Option 1: Frontend Integration (Recommended)
+1. Add export buttons to billing dashboard
+   - CSV export buttons for all data types
+   - PDF download buttons for invoices and summaries
+2. Create cost forecasting display component
+   - Show all 4 forecasting methods
+   - Display consensus average
+   - Visualize forecast trends with charts
+3. Add export history/download center page
 
-⚠️ **Important Notes**:
-- Backend dependencies are installed and working
-- No git repository initialized yet (directory is not a git repo)
-- Environment variables need to be configured before running
-- PostgreSQL must be installed and running
-- Encryption key must be exactly 32 characters
+### Option 2: Testing & Verification
+1. Configure email service (SMTP credentials in .env)
+2. Test all 12 export endpoints with sample data
+3. Verify forecasting algorithms with real billing data
+4. Test budget alerts end-to-end (manual trigger + cron)
+5. Generate sample PDFs and verify formatting
+
+### Option 3: Deployment
+1. Set up production environment
+2. Deploy backend to cloud (AWS EC2/ECS, Heroku, DigitalOcean)
+3. Deploy web frontend (S3+CloudFront, Netlify, Vercel)
+4. Configure production database (AWS RDS)
+5. Set up SSL certificates and domain
+
+### Option 4: Mobile App
+1. Start React Native project
+2. Port billing dashboard to mobile
+3. Add export functionality to mobile app
+4. Build Android APK and iOS IPA
+
+⚠️ **Configuration Required**:
+- Email service needs SMTP credentials in `.env`:
+  ```
+  EMAIL_HOST=smtp.gmail.com
+  EMAIL_PORT=587
+  EMAIL_USER=your-email@gmail.com
+  EMAIL_PASS=your-app-specific-password
+  EMAIL_FROM=AWS Centralized Management <your-email@gmail.com>
+  ENABLE_CRON_JOBS=true
+  ```
 
 ## Project Overview
 
-AWS Centralized Management Application - A cross-platform (Web, iOS, Android) application for managing multiple AWS client accounts from a single interface. Designed for a solo developer with zero coding experience using JavaScript/TypeScript stack.
+AWS Centralized Management Application - A cross-platform (Web, iOS, Android) application for managing multiple AWS client accounts with per-user billing, budget alerts, cost forecasting, and comprehensive reporting.
 
 ## Technology Stack
 
@@ -76,16 +131,9 @@ AWS Centralized Management Application - A cross-platform (Web, iOS, Android) ap
 - **Mobile App**: React Native, React Navigation
 - **Security**: JWT authentication, bcrypt password hashing, AES-256-GCM encryption
 - **AWS Integration**: AWS SDK for JavaScript v3 (EC2, S3, RDS, Cost Explorer)
-
-## Project Structure
-
-```
-├── backend/           # Node.js + Express API server
-├── web/              # React web application
-├── mobile/           # React Native mobile app
-├── README.md         # Comprehensive documentation
-└── SETUP_GUIDE.md    # Quick setup guide
-```
+- **Email**: Nodemailer with Handlebars templates
+- **Export**: Papaparse (CSV), PDFKit (PDF)
+- **Scheduling**: node-cron for automated jobs
 
 ## Development Commands
 
@@ -96,7 +144,7 @@ npm install           # Install dependencies
 npm run dev          # Start development server with hot reload
 npm run build        # Build TypeScript to JavaScript
 npm start            # Start production server
-npm run setup        # Run setup utilities (generate key, create admin)
+npm run setup        # Run setup utilities
 ```
 
 ### Web
@@ -105,99 +153,132 @@ cd web
 npm install          # Install dependencies
 npm start            # Start development server (port 3001)
 npm run build        # Build for production
-npm test             # Run tests
 ```
 
 ### Mobile
 ```bash
 cd mobile
 npm install          # Install dependencies
-npm run android      # Run on Android emulator/device
-npm run ios          # Run on iOS simulator/device
-npm start            # Start Metro bundler
+npm run android      # Run on Android
+npm run ios          # Run on iOS
 ```
 
-## Architecture
+## API Endpoints
 
-### Backend Architecture
-- **Express Server** (`backend/src/server.ts`) - Main entry point
-- **Database Layer** (`backend/src/models/`) - PostgreSQL models (User, Client, ActivityLog)
-- **API Routes** (`backend/src/routes/`) - RESTful endpoints for auth, clients, AWS resources
-- **Services** (`backend/src/services/`) - Business logic for encryption and AWS integration
-- **Middleware** (`backend/src/middleware/`) - Authentication and error handling
+### Phase 1-3: Core Features
+**Authentication**: POST /api/auth/register, POST /api/auth/login
 
-### Security Features
-1. **Credential Encryption**: AWS credentials encrypted at rest using AES-256-GCM with unique IVs
-2. **Authentication**: JWT-based auth with bcrypt password hashing
-3. **API Security**: Helmet.js security headers, CORS protection
-4. **Activity Logging**: All actions logged for audit purposes
+**Clients**: GET/POST/PUT/DELETE /api/clients
 
-### API Endpoints
+**AWS Resources**: GET /api/aws/:clientId/{ec2,s3,rds,costs}
 
-**Authentication**
-- POST `/api/auth/register` - Register new user
-- POST `/api/auth/login` - Login and get JWT
+**Billing**: GET /api/billing/user/:userId/{costs,summary,breakdown,trend,forecast}
 
-**Clients**
-- GET `/api/clients` - List all clients
-- POST `/api/clients` - Create client (credentials encrypted)
-- GET `/api/clients/:id` - Get client details
-- PUT `/api/clients/:id` - Update client
-- DELETE `/api/clients/:id` - Delete client
+**Budgets**: GET/POST/PUT/DELETE /api/budgets
 
-**AWS Resources**
-- GET `/api/aws/:clientId/ec2/instances` - List EC2 instances
-- POST `/api/aws/:clientId/ec2/instances/:instanceId/start` - Start instance
-- POST `/api/aws/:clientId/ec2/instances/:instanceId/stop` - Stop instance
-- GET `/api/aws/:clientId/s3/buckets` - List S3 buckets
-- GET `/api/aws/:clientId/rds/instances` - List RDS instances
-- GET `/api/aws/:clientId/costs` - Get cost data
+**Resource Assignments**: GET/POST/PUT/DELETE /api/resource-assignments
 
-**Activity Logs**
-- GET `/api/logs` - Get all logs (paginated)
-- GET `/api/logs/user/:userId` - Get user logs
-- GET `/api/logs/client/:clientId` - Get client logs
+### Phase 4: Budget Alerts
+- GET /api/alerts/user/:userId - Get user alerts
+- GET /api/alerts/budget/:budgetId - Get alerts for budget
+- GET /api/alerts/statistics - Alert statistics
+- POST /api/alerts/check - Manual alert check (testing)
+- POST /api/alerts/test-email - Test email configuration
 
-### Database Schema
+### Phase 5: Reports & Export
+**CSV Exports**:
+- GET /api/exports/billing-records/csv
+- GET /api/exports/cost-breakdown/csv
+- GET /api/exports/daily-costs/csv
+- GET /api/exports/top-drivers/csv
+- GET /api/exports/budgets/csv
+- GET /api/exports/assignments/csv
+- GET /api/exports/alerts/csv
+- GET /api/exports/monthly-report/csv
 
-**users**
-- Stores user authentication credentials
-- Passwords hashed with bcrypt
+**PDF Generation**:
+- GET /api/exports/monthly-invoice/pdf
+- GET /api/exports/cost-summary/pdf
 
-**clients**
-- Stores AWS client information
-- AWS credentials encrypted with AES-256-GCM
-- Unique IV per credential
+**Cost Forecasting**:
+- GET /api/exports/forecast/comprehensive - All 4 methods + consensus
+- GET /api/exports/forecast/:method - Specific method (linear|moving-average|exponential|historical)
 
-**activity_logs**
-- Audit trail of all operations
-- JSON details field for flexible logging
+## Database Schema
 
-## Important Notes
+**Core Tables** (Phase 1):
+- `users` - User authentication
+- `clients` - AWS client accounts with encrypted credentials
+- `activity_logs` - Audit trail
 
-### Environment Variables
+**Billing Tables** (Phase 1):
+- `user_resource_assignments` - Link resources to users
+- `user_budgets` - Monthly spending limits and thresholds
+- `billing_records` - Daily cost tracking per resource
 
-**Backend** (`.env`)
-```
-PORT=3000
-NODE_ENV=development
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=aws_central_mgmt
-DB_USER=postgres
-DB_PASSWORD=your_password
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=1h
-ENCRYPTION_KEY=32_character_key
-ALLOWED_ORIGINS=http://localhost:3001
-```
+**Alerts Table** (Phase 4):
+- `budget_alerts` - Alert history with email tracking
 
-**Web** (`.env`)
-```
-REACT_APP_API_URL=http://localhost:3000/api
-```
+## Cron Jobs
 
-### Security Best Practices
+Automated scheduled tasks:
+- **Budget alerts check**: Every hour at :00
+- **Daily cost sync**: Daily at 1:00 AM
+- **Data cleanup**: Weekly on Sunday at 2:00 AM
+
+Managed by `backend/src/services/cron-jobs.service.ts`
+
+## Forecasting Algorithms
+
+1. **Linear Extrapolation**: Simple daily average projection
+   - Uses current month's daily average
+   - Projects to next month based on days in month
+
+2. **Moving Average**: 7-day smoothed window
+   - Averages last 7 days of costs
+   - Reduces impact of daily fluctuations
+
+3. **Exponential Smoothing**: Weighted recent data (alpha=0.3)
+   - Gives more weight to recent costs
+   - Adapts faster to trend changes
+
+4. **Historical Trend**: Growth rate analysis
+   - Analyzes last 6 months of data
+   - Calculates month-over-month growth
+   - Projects based on historical pattern
+
+5. **Comprehensive Forecast**: Consensus + Recommendation
+   - Runs all 4 methods in parallel
+   - Calculates consensus average
+   - Recommends method with highest confidence and most data
+
+Each forecast includes:
+- Forecasted cost for next month
+- Confidence level (low/medium/high)
+- Trend direction (increasing/decreasing/stable)
+- Daily average
+- Number of data points used
+
+## Email Templates
+
+Professional HTML templates with responsive design:
+1. **Budget Alert** (threshold warning)
+   - Purple gradient header
+   - Progress bars with color coding
+   - 4-card stats grid
+   - Actionable recommendations
+
+2. **Over Budget Alert** (critical warning)
+   - Red gradient header
+   - Large overage amount
+   - Emergency action checklist
+
+3. **Daily Cost Summary** (routine report)
+   - Daily/MTD/Average metrics
+   - Top services cost table
+   - Professional branding
+
+## Security Best Practices
 
 1. **Never commit** `.env` files or encryption keys
 2. **Rotate credentials** regularly
@@ -205,121 +286,51 @@ REACT_APP_API_URL=http://localhost:3000/api
 4. **Keep dependencies updated** for security patches
 5. **Validate input** on both frontend and backend
 6. **Log sensitive operations** for audit purposes
+7. **Email credentials** use app-specific passwords, not account passwords
 
-### Code Patterns
+## Troubleshooting
 
-**Backend Error Handling**
-- Use try-catch in all async functions
-- Pass errors to next() middleware
-- Global error handler in `error.middleware.ts`
+### Common Issues
 
-**Authentication Flow**
-1. User logs in with email/password
-2. Backend validates credentials
-3. JWT token generated and returned
-4. Frontend stores token in localStorage (web) or AsyncStorage (mobile)
-5. Token sent in Authorization header for protected routes
+1. **Email service unavailable**: Check SMTP credentials in .env
+2. **Cron jobs not running**: Set ENABLE_CRON_JOBS=true in .env
+3. **TypeScript errors**: Run `npm run build` to check compilation
+4. **Database connection fails**: Check PostgreSQL is running
+5. **JWT errors**: Verify JWT_SECRET is set in .env
+6. **Export errors**: Ensure billing data exists for user/period
 
-**AWS Operations**
-1. Get client ID from request
-2. Fetch encrypted credentials from database
-3. Decrypt credentials
-4. Create AWS SDK client with decrypted credentials
-5. Perform AWS operation
-6. Log activity
-7. Return results
+### Development Tips
 
-### Adding New Features
+- Use `POST /api/alerts/test-email` to verify email configuration
+- Use `POST /api/alerts/check` to manually trigger budget checks
+- Check cron job status in server startup logs
+- Monitor console for scheduled job execution
+- Test exports with different date ranges
 
-**To add a new AWS service:**
-1. Add client creation function in `backend/src/services/aws.service.ts`
-2. Add service operations (list, get, update, etc.)
-3. Create routes in `backend/src/routes/aws.routes.ts`
-4. Add API calls in `web/src/services/api.service.ts`
-5. Create UI components in `web/src/pages/`
-6. Update mobile screens if needed
+## Git Workflow
 
-**To add new API endpoint:**
-1. Create route handler in appropriate routes file
-2. Add validation using express-validator
-3. Implement business logic
-4. Add activity logging
-5. Update API service on frontend
-6. Test thoroughly
+Repository: https://github.com/Lalatenduswain/AWS-Centralized-Management-Application
 
-## Common Issues
+Recent commits:
+```
+6856ae4 - Add Phase 5: Reports & Export with Cost Forecasting
+1f3dd27 - Phase 4: Budget Alerts System - Complete
+399d045 - Phase 3: User Billing Dashboard UI - Complete
+e323140 - Phase 2: Backend API for Billing - Complete
+e861768 - Phase 1 Complete: Billing database schema and models
+```
 
-1. **Database connection fails**: Check PostgreSQL is running and credentials are correct
-2. **JWT errors**: Verify JWT_SECRET is set in .env
-3. **AWS operations fail**: Check IAM permissions and credential encryption
-4. **CORS errors**: Add origin to ALLOWED_ORIGINS in backend .env
-5. **Port conflicts**: Change PORT in .env files
+## Next Development Phase
 
-## Testing
+**Recommended: Frontend Integration for Phase 5**
 
-- Manual testing using Postman/Insomnia for API
-- React app testing in browser
-- Mobile app testing in emulators/simulators
+Add to web dashboard:
+1. Export buttons on billing pages
+2. Cost forecasting visualization
+3. Download center for reports
+4. Export history/audit trail
 
-## Deployment Considerations
-
-- Use environment-specific .env files
-- Set up SSL/TLS certificates
-- Configure production database (AWS RDS recommended)
-- Use PM2 or similar for process management
-- Set up monitoring and logging
-- Configure backup strategy for database
-- Use CDN for web app static files
-
-## Future Enhancements
-
-**See FEATURE_ROADMAP.md for comprehensive feature ideas (100+ features across 10 priority categories)**
-
-### Priority 1: Per-User Billing & Cost Management 🔥
-- [ ] Track AWS costs per user/team member
-- [ ] Set monthly budgets per user
-- [ ] Budget alerts (email when 80% used)
-- [ ] Cost breakdown by AWS service
-- [ ] Daily/monthly spending trends
-- [ ] Cost forecasting
-- [ ] Invoice generation per user
-- [ ] CSV/PDF export
-
-### Priority 2: Role-Based Access Control (RBAC) 🔥
-- [ ] Super Admin, Admin, Developer, Viewer, Billing Manager roles
-- [ ] Granular permissions per role
-- [ ] Team/group management
-- [ ] Per-client access control
-
-### Priority 3: Advanced AWS Services
-- [ ] Lambda function management
-- [ ] CloudWatch metrics & alarms
-- [ ] VPC & Networking
-- [ ] IAM user management
-- [ ] ECS/EKS container management
-- [ ] Route53 DNS management
-- [ ] CloudFormation stacks
-
-### Priority 4: Monitoring & Alerts
-- [ ] Real-time resource status updates
-- [ ] Cost alerts (budget exceeded)
-- [ ] Security alerts (unauthorized access)
-- [ ] Performance alerts (high CPU)
-- [ ] Multi-channel notifications (Email, SMS, Slack)
-
-### Priority 5: Security & Compliance
-- [ ] Multi-factor authentication (MFA)
-- [ ] IP whitelisting
-- [ ] Credential rotation
-- [ ] Session management
-- [ ] SOC 2 / GDPR compliance features
-
-### Other Features (See FEATURE_ROADMAP.md)
-- [ ] Advanced reporting & analytics
-- [ ] Team collaboration features
-- [ ] Developer API & integrations
-- [ ] Mobile app enhancements
-- [ ] AI & automation features
+See "Immediate Next Steps" section above for detailed tasks.
 
 ---
 
