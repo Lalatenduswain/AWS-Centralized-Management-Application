@@ -26,7 +26,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { billingAPI, budgetsAPI, resourceAssignmentsAPI } from '../services/api.service';
+import { billingAPI, budgetsAPI, resourceAssignmentsAPI, exportsAPI, forecastingAPI } from '../services/api.service';
 import './UserBilling.css';
 
 // Chart colors
@@ -76,6 +76,16 @@ interface Forecast {
   forecasted_cost: number;
   currency: string;
   method: string;
+  confidence?: 'low' | 'medium' | 'high';
+  trend?: 'increasing' | 'decreasing' | 'stable';
+  daily_average?: number;
+  data_points?: number;
+}
+
+interface ComprehensiveForecast {
+  forecasts: Forecast[];
+  recommended: Forecast;
+  consensus: number;
 }
 
 const UserBilling: React.FC = () => {
@@ -90,6 +100,9 @@ const UserBilling: React.FC = () => {
   const [dailyCosts, setDailyCosts] = useState<DailyCost[]>([]);
   const [topDrivers, setTopDrivers] = useState<CostDriver[]>([]);
   const [forecast, setForecast] = useState<Forecast | null>(null);
+  const [comprehensiveForecast, setComprehensiveForecast] = useState<ComprehensiveForecast | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState(
     new Date().toISOString().slice(0, 7) // YYYY-MM
   );
@@ -134,6 +147,84 @@ const UserBilling: React.FC = () => {
     }
   };
 
+  const fetchComprehensiveForecast = async () => {
+    try {
+      const response = await forecastingAPI.getComprehensiveForecast(userId);
+      setComprehensiveForecast(response.data.data);
+    } catch (err) {
+      console.error('Error fetching comprehensive forecast:', err);
+    }
+  };
+
+  const downloadFile = (blob: Blob, filename: string) => {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleExport = async (exportType: string) => {
+    try {
+      setExportLoading(true);
+      let response;
+      let filename;
+
+      const startOfMonth = new Date(selectedPeriod + '-01').toISOString().split('T')[0];
+      const endOfMonth = new Date(new Date(selectedPeriod).getFullYear(), new Date(selectedPeriod).getMonth() + 1, 0)
+        .toISOString().split('T')[0];
+
+      switch (exportType) {
+        case 'billing-csv':
+          response = await exportsAPI.exportBillingRecords(userId, startOfMonth, endOfMonth);
+          filename = `billing-records-${selectedPeriod}.csv`;
+          break;
+        case 'breakdown-csv':
+          response = await exportsAPI.exportCostBreakdown(userId, selectedPeriod);
+          filename = `cost-breakdown-${selectedPeriod}.csv`;
+          break;
+        case 'daily-csv':
+          response = await exportsAPI.exportDailyCosts(userId, startOfMonth, endOfMonth);
+          filename = `daily-costs-${selectedPeriod}.csv`;
+          break;
+        case 'drivers-csv':
+          response = await exportsAPI.exportTopDrivers(userId, selectedPeriod, 50);
+          filename = `top-drivers-${selectedPeriod}.csv`;
+          break;
+        case 'budgets-csv':
+          response = await exportsAPI.exportBudgets(userId);
+          filename = `budgets-${userId}.csv`;
+          break;
+        case 'monthly-report-csv':
+          response = await exportsAPI.exportMonthlyReport(userId, selectedPeriod);
+          filename = `monthly-report-${selectedPeriod}.csv`;
+          break;
+        case 'invoice-pdf':
+          response = await exportsAPI.exportMonthlyInvoice(userId, selectedPeriod);
+          filename = `invoice-${selectedPeriod}.pdf`;
+          break;
+        case 'summary-pdf':
+          response = await exportsAPI.exportCostSummary(userId, startOfMonth, endOfMonth);
+          filename = `cost-summary-${selectedPeriod}.pdf`;
+          break;
+        default:
+          throw new Error('Unknown export type');
+      }
+
+      downloadFile(response.data, filename);
+      alert(`${filename} downloaded successfully!`);
+      setShowExportMenu(false);
+    } catch (err: any) {
+      console.error('Export error:', err);
+      alert('Failed to export: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   const formatCurrency = (amount: number, currency: string = 'USD') => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -171,17 +262,49 @@ const UserBilling: React.FC = () => {
     <div className="billing-container">
       <div className="billing-header">
         <h1>💰 Billing Dashboard</h1>
-        <div className="period-selector">
-          <label>Period:</label>
-          <input
-            type="month"
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="period-input"
-          />
+        <div className="header-actions">
+          <div className="period-selector">
+            <label>Period:</label>
+            <input
+              type="month"
+              value={selectedPeriod}
+              onChange={(e) => setSelectedPeriod(e.target.value)}
+              className="period-input"
+            />
+          </div>
           <button onClick={fetchAllBillingData} className="btn-refresh">
             🔄 Refresh
           </button>
+          <button onClick={fetchComprehensiveForecast} className="btn-forecast">
+            🔮 Detailed Forecast
+          </button>
+          <div className="export-dropdown">
+            <button
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              className="btn-export"
+              disabled={exportLoading}
+            >
+              📊 Export {exportLoading && '...'}
+            </button>
+            {showExportMenu && (
+              <div className="export-menu">
+                <div className="export-menu-section">
+                  <h4>CSV Exports</h4>
+                  <button onClick={() => handleExport('billing-csv')}>📄 Billing Records</button>
+                  <button onClick={() => handleExport('breakdown-csv')}>📊 Cost Breakdown</button>
+                  <button onClick={() => handleExport('daily-csv')}>📈 Daily Costs</button>
+                  <button onClick={() => handleExport('drivers-csv')}>🔝 Top Drivers</button>
+                  <button onClick={() => handleExport('budgets-csv')}>💳 Budgets</button>
+                  <button onClick={() => handleExport('monthly-report-csv')}>📋 Monthly Report</button>
+                </div>
+                <div className="export-menu-section">
+                  <h4>PDF Exports</h4>
+                  <button onClick={() => handleExport('invoice-pdf')}>🧾 Monthly Invoice</button>
+                  <button onClick={() => handleExport('summary-pdf')}>📑 Cost Summary</button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -367,6 +490,115 @@ const UserBilling: React.FC = () => {
               <span>Days Left in Month:</span>
               <strong>{budgetStatus.daysLeftInMonth} days</strong>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Comprehensive Forecast Section */}
+      {comprehensiveForecast && (
+        <div className="forecast-section">
+          <h3>🔮 Comprehensive Cost Forecast</h3>
+
+          {/* Consensus and Recommendation */}
+          <div className="forecast-summary">
+            <div className="forecast-card highlight">
+              <h4>📊 Consensus Forecast</h4>
+              <div className="forecast-value">
+                {formatCurrency(comprehensiveForecast.consensus)}
+              </div>
+              <div className="forecast-subtitle">Average of all methods</div>
+            </div>
+            <div className="forecast-card highlight">
+              <h4>⭐ Recommended</h4>
+              <div className="forecast-value">
+                {formatCurrency(comprehensiveForecast.recommended.forecasted_cost)}
+              </div>
+              <div className="forecast-subtitle">
+                Method: {comprehensiveForecast.recommended.method.replace(/_/g, ' ')}
+              </div>
+              <div className="forecast-meta">
+                <span className={`badge confidence-${comprehensiveForecast.recommended.confidence}`}>
+                  {comprehensiveForecast.recommended.confidence} confidence
+                </span>
+                <span className={`badge trend-${comprehensiveForecast.recommended.trend}`}>
+                  {comprehensiveForecast.recommended.trend}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* All Forecasting Methods */}
+          <div className="forecast-methods">
+            <h4>All Forecasting Methods</h4>
+            <div className="forecast-grid">
+              {comprehensiveForecast.forecasts.map((f, index) => (
+                <div key={index} className="forecast-method-card">
+                  <div className="method-header">
+                    <h5>{f.method.replace(/_/g, ' ').toUpperCase()}</h5>
+                    <span className={`badge confidence-${f.confidence}`}>{f.confidence}</span>
+                  </div>
+                  <div className="method-forecast">
+                    {formatCurrency(f.forecasted_cost)}
+                  </div>
+                  <div className="method-details">
+                    <div className="detail-row">
+                      <span>Period:</span>
+                      <strong>{f.forecast_period}</strong>
+                    </div>
+                    {f.trend && (
+                      <div className="detail-row">
+                        <span>Trend:</span>
+                        <span className={`trend-badge trend-${f.trend}`}>{f.trend}</span>
+                      </div>
+                    )}
+                    {f.daily_average && (
+                      <div className="detail-row">
+                        <span>Daily Avg:</span>
+                        <strong>{formatCurrency(f.daily_average)}</strong>
+                      </div>
+                    )}
+                    {f.data_points && (
+                      <div className="detail-row">
+                        <span>Data Points:</span>
+                        <strong>{f.data_points}</strong>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Forecast Comparison Chart */}
+          <div className="forecast-chart">
+            <h4>Forecast Comparison</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={comprehensiveForecast.forecasts.map(f => ({
+                name: f.method.replace(/_/g, ' '),
+                forecast: f.forecasted_cost,
+                confidence: f.confidence,
+              }))}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" angle={-15} textAnchor="end" height={80} />
+                <YAxis tickFormatter={(value) => `$${value}`} />
+                <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                <Legend />
+                <Bar dataKey="forecast" fill="#8884d8" name="Forecasted Cost">
+                  {comprehensiveForecast.forecasts.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.confidence === 'high'
+                          ? '#28a745'
+                          : entry.confidence === 'medium'
+                          ? '#ffc107'
+                          : '#dc3545'
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}

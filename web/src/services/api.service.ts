@@ -304,4 +304,114 @@ export const resourceAssignmentsAPI = {
   }) => apiClient.post('/resource-assignments/bulk', bulkData),
 };
 
+/**
+ * Export & Reports API (Phase 5)
+ */
+export const exportsAPI = {
+  // CSV Exports
+  exportBillingRecords: (userId: number, startDate?: string, endDate?: string) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    return apiClient.get(`/exports/billing-records/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportCostBreakdown: (userId: number, period?: string) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (period) params.append('period', period);
+    return apiClient.get(`/exports/cost-breakdown/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportDailyCosts: (userId: number, startDate: string, endDate: string) => {
+    const params = new URLSearchParams({
+      userId: userId.toString(),
+      startDate,
+      endDate,
+    });
+    return apiClient.get(`/exports/daily-costs/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportTopDrivers: (userId: number, period?: string, limit?: number) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (period) params.append('period', period);
+    if (limit) params.append('limit', limit.toString());
+    return apiClient.get(`/exports/top-drivers/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportBudgets: (userId: number) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    return apiClient.get(`/exports/budgets/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportAssignments: (userId: number) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    return apiClient.get(`/exports/assignments/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportAlerts: (userId: number, limit?: number) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (limit) params.append('limit', limit.toString());
+    return apiClient.get(`/exports/alerts/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportMonthlyReport: (userId: number, period?: string) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (period) params.append('period', period);
+    return apiClient.get(`/exports/monthly-report/csv?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  // PDF Exports
+  exportMonthlyInvoice: (userId: number, period?: string) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    if (period) params.append('period', period);
+    return apiClient.get(`/exports/monthly-invoice/pdf?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+
+  exportCostSummary: (userId: number, startDate: string, endDate: string) => {
+    const params = new URLSearchParams({
+      userId: userId.toString(),
+      startDate,
+      endDate,
+    });
+    return apiClient.get(`/exports/cost-summary/pdf?${params.toString()}`, {
+      responseType: 'blob',
+    });
+  },
+};
+
+/**
+ * Cost Forecasting API (Phase 5)
+ */
+export const forecastingAPI = {
+  // Get comprehensive forecast (all methods + consensus)
+  getComprehensiveForecast: (userId: number) => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    return apiClient.get(`/exports/forecast/comprehensive?${params.toString()}`);
+  },
+
+  // Get forecast using specific method
+  getForecastByMethod: (userId: number, method: 'linear' | 'moving-average' | 'exponential' | 'historical') => {
+    const params = new URLSearchParams({ userId: userId.toString() });
+    return apiClient.get(`/exports/forecast/${method}?${params.toString()}`);
+  },
+};
+
 export default apiClient;
